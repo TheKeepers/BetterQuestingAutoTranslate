@@ -1,3 +1,3 @@
 # BetterQuestingAutoTranslate
 
-开发视频教程见：https://www.bilibili.com/video/BV1Mq4y1K7aG/
+codes in the new `translate.py` is from https://github.com/VictorZhang2014/free-google-translate which is licensed under MIT License. Thanks for the original author.
