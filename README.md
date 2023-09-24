@@ -1,3 +1,5 @@
 # BetterQuestingAutoTranslate
 
-开发视频教程见：https://www.bilibili.com/video/BV1Mq4y1K7aG/
+Forked from https://github.com/qc5111/BetterQuestingAutoTranslate.
+
+Use OpenAI's ChatGPT API for auto translation instead of Google Translation's API.

@@ -1,0 +1,12 @@
+!/.idea/.gitignore
+
+/.minecraft/
+/test.txt
+
+/__pycache__
+.idea/BetterQuestingAutoTranslate.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/dictionaries/*
+.idea/inspectionProfiles/profiles_settings.xml

@@ -1,66 +1,58 @@
-from selenium import webdriver
-from urllib import parse
+import openai
 import time
-class Translate():
-    def __init__(self):
-        self.driver = webdriver.Chrome()
-        
-    def TransText(self,text):
-        text = parse.quote(text)
-        #print("https://translate.google.cn/?sl=en&tl=zh-CN&op=translate&text=%s" % text)
-        self.driver.get("https://translate.google.cn/?sl=en&tl=zh-CN&op=translate&text=%s" % text)
-        while True:
-            try:
-                ResultElement = self.driver.find_element_by_css_selector("div.J0lOec")
-                break
-            except:
-                time.sleep(0.2)
-        Result = ResultElement.get_attribute("innerText")
-        self.driver.get("data:,")
-        return Result
-            
-        
-#Tras = Translate()
-#result = Tras.TransText("This is a test.")
-#print(result)
-def TranslateArr(DataWaitToTransArr):
-    
-    ResultArr = []
-    DataWaitToTrans = "\n\n".join(DataWaitToTransArr)
-    Pos = 0
-    EffectivePos = 0
-    TranslatedPos = -2
-    googletrans = Translate()
-    Finish = False
-    fw = open("test.txt","w",encoding='utf-8')
-    fw.write(DataWaitToTrans)
-        
+
+openai.api_key = 'put-your-apikey-here'
+
+def translate_text(text, source_language='English', target_language='Chinese Simplified'):
+    prompt = f"Translate the following '{source_language}' text to '{target_language}': {text}"
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-instruct",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that translates text."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+
+    translation = response.choices[0].message.content.strip()
+    return translation
+
+
+def translate_arr(data_to_translate_arr):
+    result_arr = []
+    data_wait_to_translate = "\n\n".join(data_to_translate_arr)
+    pos = 0
+    effective_pos = 0
+    translated_pos = -2
+    finish = False
+    fw = open("test.txt", "w", encoding='utf-8')
+    fw.write(data_wait_to_translate)
+
     while True:
         while True:
-            Pos = DataWaitToTrans.find("\n\n",Pos+1)
-            if Pos == -1:
-                EffectivePos = len(DataWaitToTrans)+1
-                Finish = True
+            pos = data_wait_to_translate.find("\n\n", pos + 1)
+            if pos == -1:
+                effective_pos = len(data_wait_to_translate) + 1
+                finish = True
                 break
-            #print(Pos - TranslatedPos,Pos)
-            if Pos - TranslatedPos > 4800:
+            # print(Pos - translated_pos,Pos)
+            if pos - translated_pos > 4800:
                 break
-            EffectivePos = Pos
-        
-        #print("'"+DataWaitToTrans[TranslatedPos+2:EffectivePos]+"'")
-        
-        Transresult = googletrans.TransText(DataWaitToTrans[TranslatedPos+2:EffectivePos])
-        #Transresult = ""
-        #print(DataWaitToTrans[TranslatedPos+2:EffectivePos].split("\n\n"))
-        print(len(DataWaitToTrans[TranslatedPos+2:EffectivePos].split("\n\n")),len(Transresult.split("\n\n")))
-        if len(DataWaitToTrans[TranslatedPos+2:EffectivePos].split("\n\n")) != len(Transresult.split("\n\n")):
+            effective_pos = pos
+
+        translation_result = translate_text(data_wait_to_translate[translated_pos + 2:effective_pos])
+        print(len(data_wait_to_translate[translated_pos + 2:effective_pos].split("\n\n")),
+              len(translation_result.split("\n\n")))
+        if len(data_wait_to_translate[translated_pos + 2:effective_pos].split("\n\n")) != len(
+                translation_result.split("\n\n")):
             print("Fail!!!!!!!!!!!!!")
-        ResultArr.append(Transresult)
-        TranslatedPos = EffectivePos
-        if Finish:
-            print(("\n\n".join(ResultArr)).split("\n\n"))
-            return ("\n\n".join(ResultArr)).split("\n\n")
+        result_arr.append(translation_result)
+        translated_pos = effective_pos
+        if finish:
+            print(("\n\n".join(result_arr)).split("\n\n"))
+            return ("\n\n".join(result_arr)).split("\n\n")
         time.sleep(8)
-
-
- 
